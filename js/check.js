@@ -1,25 +1,25 @@
 function getMessage(a,b) {
     if (typeof a == "boolean") {
         if (a) {
-            return "Переданное GIF-изображение анимировано и содержит [" + b + "] кадров";
+            return "Переданное GIF-изображение анимировано и содержит " + b + " кадров";
         }
         else {
             return "Переданное GIF-изображение не анимировано";
         }
     }
     if (typeof a == "number") {
-        return "Переданное SVG-изображение содержит [" + a + "] объектов и [" + (parseInt(b) * 4) + "] аттрибутов";
+        return "Переданное SVG-изображение содержит " + a + " объектов и " + (parseInt(b) * 4) + " аттрибутов";
     }
 
     if (a instanceof Array)
     {
         if (b instanceof Array)
         {
-            return "Общая площадь артефактов сжатия: [" + calculateSquare(a, b) + "] пикселей";
+            return "Общая площадь артефактов сжатия: " + calculateSquare(a, b) + " пикселей";
         }
         else
         {
-            return "Количество красных точек во всех строчках изображения: [" + arraySum(a) + "]";
+            return "Количество красных точек во всех строчках изображения: " + arraySum(a);
         }
     }
 
