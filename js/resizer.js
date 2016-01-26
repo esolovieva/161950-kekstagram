@@ -111,13 +111,35 @@
       // Координаты задаются от центра холста.
       this._ctx.drawImage(this._image, displX, displY);
 
+
+      //Обводка вокруг желтой рамки на 80% прозрачного черного цвета
+      this._ctx.fillStyle = 'rgba(0,0,0,0.8)';
+      this._ctx.rect(displX, displY,
+        this._image.naturalWidth,
+        this._image.naturalHeight);
+      this._ctx.rect((-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+      (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+      this._resizeConstraint.side - this._ctx.lineWidth / 2,
+      this._resizeConstraint.side - this._ctx.lineWidth / 2);
+      this._ctx.fill('evenodd');
+
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
       this._ctx.strokeRect(
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2);
+        (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+        (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+        this._resizeConstraint.side - this._ctx.lineWidth / 2,
+        this._resizeConstraint.side - this._ctx.lineWidth / 2);
+
+      //Вывод размеров кадрируемого изображения над прямоугольником.
+      var textX = -5;
+      var textY = -this._resizeConstraint.side / 2 - 10;
+      this._ctx.fillStyle = '#FFF';
+      //this._ctx.font = '12pt Arial';
+      this._ctx.textBaseline = 'bottom';
+      this._ctx.textAlign = 'center';
+      this._ctx.fillText(this._image.naturalWidth.toString() + ' x ' + this._image.naturalHeight.toString(), textX, textY);
+
 
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
