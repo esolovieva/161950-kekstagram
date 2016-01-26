@@ -123,17 +123,53 @@
       this._resizeConstraint.side - this._ctx.lineWidth / 2);
       this._ctx.fill('evenodd');
 
-      // Отрисовка прямоугольника, обозначающего область изображения после
-      // кадрирования. Координаты задаются от центра.
-      this._ctx.strokeRect(
-        (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-        (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-        this._resizeConstraint.side - this._ctx.lineWidth / 2,
-        this._resizeConstraint.side - this._ctx.lineWidth / 2);
+      //// Отрисовка прямоугольника, обозначающего область изображения после
+      //// кадрирования. Координаты задаются от центра.
+      //this._ctx.strokeRect(
+      //  (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+      //  (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+      //  this._resizeConstraint.side - this._ctx.lineWidth / 2,
+      //  this._resizeConstraint.side - this._ctx.lineWidth / 2);
+
+      // Отрисовка прямоугольника желтыми точками
+      var circleRad = 3;
+      var circleDist = 2;
+      var circleX = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
+      var circleY = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
+
+      var nCircInRow = this._resizeConstraint.side / (circleRad * 2 + circleDist) ^ 0;
+      this._ctx.fillStyle = '#ffe753';
+      for (var i = 0; i <= nCircInRow; i++) {
+        this._ctx.beginPath();
+        this._ctx.arc(circleX, circleY, circleRad, 0, Math.PI * 2);
+        this._ctx.fill();
+        circleX += 2 * circleRad + circleDist;
+      }
+      for (var i = 0; i <= nCircInRow + 1; i++) {
+        this._ctx.beginPath();
+        this._ctx.arc(circleX, circleY, circleRad, 0, Math.PI * 2);
+        this._ctx.fill();
+        circleY += 2 * circleRad + circleDist;
+      }
+      circleX = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
+      circleY = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
+
+      for (var i = 0; i <= nCircInRow; i++) {
+        this._ctx.beginPath();
+        this._ctx.arc(circleX, circleY, circleRad, 0, Math.PI * 2);
+        this._ctx.fill();
+        circleY += 2 * circleRad + circleDist;
+      }
+      for (var i = 0; i <= nCircInRow; i++) {
+        this._ctx.beginPath();
+        this._ctx.arc(circleX, circleY, circleRad, 0, Math.PI * 2);
+        this._ctx.fill();
+        circleX += 2 * circleRad + circleDist;
+      }
 
       //Вывод размеров кадрируемого изображения над прямоугольником.
       var textX = -5;
-      var textY = -this._resizeConstraint.side / 2 - 10;
+      var textY = -this._resizeConstraint.side / 2 - 15;
       this._ctx.fillStyle = '#FFF';
       //this._ctx.font = '12pt Arial';
       this._ctx.textBaseline = 'bottom';
