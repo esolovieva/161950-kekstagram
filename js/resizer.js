@@ -132,11 +132,13 @@
       //  this._resizeConstraint.side - this._ctx.lineWidth / 2);
 
       // Отрисовка прямоугольника желтыми точками
+      //Радиус точки
       var circleRad = 3;
+      //Расстояние между точками
       var circleDist = 2;
       var circleX = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
       var circleY = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
-
+      // Считаем количество точек в ряду
       var nCircInRow = this._resizeConstraint.side / (circleRad * 2 + circleDist) ^ 0;
       this._ctx.fillStyle = '#ffe753';
       for (var i = 0; i <= nCircInRow; i++) {
