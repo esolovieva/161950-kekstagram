@@ -118,18 +118,10 @@
         this._image.naturalWidth,
         this._image.naturalHeight);
       this._ctx.rect((-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-      (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-      this._resizeConstraint.side - this._ctx.lineWidth / 2,
-      this._resizeConstraint.side - this._ctx.lineWidth / 2);
+        (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+        this._resizeConstraint.side - this._ctx.lineWidth / 2,
+        this._resizeConstraint.side - this._ctx.lineWidth / 2);
       this._ctx.fill('evenodd');
-
-      //// Отрисовка прямоугольника, обозначающего область изображения после
-      //// кадрирования. Координаты задаются от центра.
-      //this._ctx.strokeRect(
-      //  (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-      //  (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-      //  this._resizeConstraint.side - this._ctx.lineWidth / 2,
-      //  this._resizeConstraint.side - this._ctx.lineWidth / 2);
 
       // Отрисовка прямоугольника желтыми точками
       //Радиус точки
@@ -139,15 +131,16 @@
       var circleX = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
       var circleY = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
       // Считаем количество точек в ряду
-      var nCircInRow = this._resizeConstraint.side / (circleRad * 2 + circleDist) ^ 0;
+      var numCirclesInRow = this._resizeConstraint.side / (circleRad * 2 + circleDist) ^ 0;
       this._ctx.fillStyle = '#ffe753';
-      for (var i = 0; i <= nCircInRow; i++) {
+      var i;
+      for (i = 0; i <= numCirclesInRow; i++) {
         this._ctx.beginPath();
         this._ctx.arc(circleX, circleY, circleRad, 0, Math.PI * 2);
         this._ctx.fill();
         circleX += 2 * circleRad + circleDist;
       }
-      for (var i = 0; i <= nCircInRow + 1; i++) {
+      for (i = 0; i <= numCirclesInRow + 1; i++) {
         this._ctx.beginPath();
         this._ctx.arc(circleX, circleY, circleRad, 0, Math.PI * 2);
         this._ctx.fill();
@@ -156,13 +149,13 @@
       circleX = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
       circleY = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
 
-      for (var i = 0; i <= nCircInRow; i++) {
+      for (i = 0; i <= numCirclesInRow; i++) {
         this._ctx.beginPath();
         this._ctx.arc(circleX, circleY, circleRad, 0, Math.PI * 2);
         this._ctx.fill();
         circleY += 2 * circleRad + circleDist;
       }
-      for (var i = 0; i <= nCircInRow; i++) {
+      for (i = 0; i <= numCirclesInRow; i++) {
         this._ctx.beginPath();
         this._ctx.arc(circleX, circleY, circleRad, 0, Math.PI * 2);
         this._ctx.fill();
