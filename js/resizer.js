@@ -111,13 +111,66 @@
       // Координаты задаются от центра холста.
       this._ctx.drawImage(this._image, displX, displY);
 
-      // Отрисовка прямоугольника, обозначающего область изображения после
-      // кадрирования. Координаты задаются от центра.
-      this._ctx.strokeRect(
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2);
+
+      //Обводка вокруг желтой рамки на 80% прозрачного черного цвета
+      this._ctx.fillStyle = 'rgba(0,0,0,0.8)';
+      this._ctx.rect(displX, displY,
+        this._image.naturalWidth,
+        this._image.naturalHeight);
+      this._ctx.rect((-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+        (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+        this._resizeConstraint.side - this._ctx.lineWidth / 2,
+        this._resizeConstraint.side - this._ctx.lineWidth / 2);
+      this._ctx.fill('evenodd');
+
+      // Отрисовка прямоугольника желтыми точками
+      //Радиус точки
+      var circleRad = 3;
+      //Расстояние между точками
+      var circleDist = 2;
+      var circleX = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
+      var circleY = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
+      // Считаем количество точек в ряду
+      var numCirclesInRow = this._resizeConstraint.side / (circleRad * 2 + circleDist) ^ 0;
+      this._ctx.fillStyle = '#ffe753';
+      var i;
+      for (i = 0; i <= numCirclesInRow; i++) {
+        this._ctx.beginPath();
+        this._ctx.arc(circleX, circleY, circleRad, 0, Math.PI * 2);
+        this._ctx.fill();
+        circleX += 2 * circleRad + circleDist;
+      }
+      for (i = 0; i <= numCirclesInRow + 1; i++) {
+        this._ctx.beginPath();
+        this._ctx.arc(circleX, circleY, circleRad, 0, Math.PI * 2);
+        this._ctx.fill();
+        circleY += 2 * circleRad + circleDist;
+      }
+      circleX = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
+      circleY = (-this._resizeConstraint.side / 2) - circleRad * 2 - circleDist;
+
+      for (i = 0; i <= numCirclesInRow; i++) {
+        this._ctx.beginPath();
+        this._ctx.arc(circleX, circleY, circleRad, 0, Math.PI * 2);
+        this._ctx.fill();
+        circleY += 2 * circleRad + circleDist;
+      }
+      for (i = 0; i <= numCirclesInRow; i++) {
+        this._ctx.beginPath();
+        this._ctx.arc(circleX, circleY, circleRad, 0, Math.PI * 2);
+        this._ctx.fill();
+        circleX += 2 * circleRad + circleDist;
+      }
+
+      //Вывод размеров кадрируемого изображения над прямоугольником.
+      var textX = -5;
+      var textY = -this._resizeConstraint.side / 2 - 15;
+      this._ctx.fillStyle = '#FFF';
+      //this._ctx.font = '12pt Arial';
+      this._ctx.textBaseline = 'bottom';
+      this._ctx.textAlign = 'center';
+      this._ctx.fillText(this._image.naturalWidth.toString() + ' x ' + this._image.naturalHeight.toString(), textX, textY);
+
 
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
