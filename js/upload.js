@@ -1,4 +1,5 @@
 /* global Resizer: true */
+/* global docCookies: true */
 
 /**
  * @fileoverview
@@ -45,6 +46,10 @@
    * Удаляет текущий объект {@link Resizer}, чтобы создать новый с другим
    * изображением.
    */
+
+  var selectedFilter = 'none';
+ /* Хранит последний выбранный фильтр */
+
   function cleanupResizer() {
     if (currentResizer) {
       currentResizer.remove();
@@ -168,6 +173,40 @@
     uploadMessage.classList.add('invisible');
   }
 
+   /**
+   * В файле upload.js сохраните в cookies последний выбранный фильтр:
+   * «Оригинал», «Хром» или «Сепия».
+   * Срок жизни cookie — количество дней, прошедшее с вашего ближайшего дня рождения.
+   */
+  function setFilterCookie(cKey, cValue) {
+    var BIRTH_MONTH_DAY = '-12-06';
+    var dateTimeNow = new Date();
+    var currentYear = dateTimeNow.getFullYear();
+    var currentYearBirthDate = new Date(currentYear + BIRTH_MONTH_DAY);
+    var previousYearBirthDate = new Date(+currentYear - 1 + BIRTH_MONTH_DAY);
+    var birthDate = (+dateTimeNow - +currentYearBirthDate) > 0 ? currentYearBirthDate : previousYearBirthDate;
+    var deltaDays = Math.round((dateTimeNow - birthDate) / 1000 / 60 / 60 / 24);
+    var cookieExpireTime = +dateTimeNow + +deltaDays * 24 * 60 * 60 * 1000;
+    var formattedCookieExpireTime = new Date(cookieExpireTime).toUTCString();
+    var cookieText = cKey + '=' + cValue + ';expires=' + formattedCookieExpireTime;
+    document.cookie = cookieText;
+  }
+
+  /*Выставляет нужному радиобаттону атрибут checked, с остальных снимает атрибут checked*/
+  function selectFilter(filterId) {
+    var filtForm = document.forms['upload-filter'];
+    var radioInputs = filtForm.querySelectorAll('input[type="radio"]');
+    if (radioInputs) {
+      for (var i = 0; i < radioInputs.length; i++) {
+        if (radioInputs[i].id !== filterId) {
+          radioInputs[i].removeAttribute('checked');
+        } else {
+          radioInputs[i].checked = true;
+        }
+      }
+    }
+  }
+
   /**
    * Обработчик изменения изображения в форме загрузки. Если загруженный
    * файл является изображением, считывается исходник картинки, создается
@@ -194,6 +233,8 @@
 
           uploadForm.classList.add('invisible');
           resizeForm.classList.remove('invisible');
+          var filterToSelect = docCookies.getItem('filter');
+          selectFilter('upload-filter-' + filterToSelect);
           hideMessage();
         };
 
@@ -248,17 +289,17 @@
     resizeForm.classList.remove('invisible');
   };
 
-  /**
+   /**
    * Отправка формы фильтра. Возвращает в начальное состояние, предварительно
    * записав сохраненный фильтр в cookie.
    * @param {Event} evt
    */
   filterForm.onsubmit = function(evt) {
     evt.preventDefault();
-
+    //Запись в куки выбранного фильтра
+    setFilterCookie('filter', selectedFilter.toString());
     cleanupResizer();
     updateBackground();
-
     filterForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
   };
@@ -279,7 +320,7 @@
       };
     }
 
-    var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
+    selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
       return item.checked;
     })[0].value;
 
@@ -292,3 +333,4 @@
   cleanupResizer();
   updateBackground();
 })();
+
