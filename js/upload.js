@@ -75,7 +75,16 @@
       element.setAttribute('title', text);
     }
   }
-
+  /**
+   * Выводит сообщения об ошибках в tooltip элемента. Выделяет элемент красным цветом.
+   */
+  function showError(element, text) {
+    element.style.border = 'solid red 2px';
+    showTextInTooltip(element, text);
+    showTextInTooltip(submitButton, 'Неправильно заполнены поля!\n' + text);
+    submitButton.disabled = true;
+    return false;
+  }
   /**
    * Проверяет, валидны ли данные, в форме кадрирования.
    * @return {boolean}
@@ -84,40 +93,21 @@
     var resizeX = resizeForm['resize-x'];
     var resizeY = resizeForm['resize-y'];
     var resizeSize = resizeForm['resize-size'];
-    var text = '';
     var maxResizeX = currentResizer._image.naturalWidth - resizeSize.value;
     var maxResizeY = currentResizer._image.naturalHeight - resizeSize.value;
 
     if (+resizeX.value < 0) {
-      text += 'Поля «сверху» и «слева» не могут быть отрицательными.';
-      showTextInTooltip(resizeX, text);
-      showTextInTooltip(submitButton, 'Неправильно заполнены поля!\n' + text);
-      submitButton.disabled = true;
-      return false;
+      return showError(resizeX, 'Поля «сверху» и «слева» не могут быть отрицательными.');
     }
     if (+resizeY.value < 0) {
-      text += 'Поля «сверху» и «слева» не могут быть отрицательными.';
-      showTextInTooltip(resizeY, text);
-      showTextInTooltip(submitButton, 'Неправильно заполнены поля!\n' + text);
-      submitButton.disabled = true;
-      return false;
+      return showError(resizeY, 'Поля «сверху» и «слева» не могут быть отрицательными.');
     }
     if (+resizeX.value > +maxResizeX) {
-      text += 'Сумма значений полей «слева» и «сторона» не должна быть больше ширины исходного изображения.';
-      showTextInTooltip(resizeSize, text);
-      showTextInTooltip(submitButton, 'Неправильно заполнены поля!\n' + text);
-      submitButton.disabled = true;
-      return false;
+      return showError(resizeSize, 'Сумма значений полей «слева» и «сторона» не должна быть больше ширины исходного изображения.');
     }
-    if (+resizeY > +maxResizeY) {
-      text += 'Сумма значений полей «сверху» и «сторона» не должна быть больше высоты исходного изображения.';
-      showTextInTooltip(resizeSize, text);
-      showTextInTooltip(submitButton, 'Неправильно заполнены поля!\n' + text);
-      submitButton.disabled = true;
-      return false;
+    if (+resizeY.value > +maxResizeY) {
+      return showError(resizeSize, 'Сумма значений полей «сверху» и «сторона» не должна быть больше высоты исходного изображения.');
     }
-
-    submitButton.disabled = false;
     return true;
   }
 
@@ -133,7 +123,6 @@
    */
   var resizeForm = document.forms['upload-resize'];
   var submitButton = resizeForm['resize-fwd'];
-  submitButton.disabled = false;
   /**
    * Форма добавления фильтра.
    * @type {HTMLFormElement}
@@ -245,7 +234,6 @@
       filterForm.classList.remove('invisible');
       return true;
     }
-    submitButton.disabled = false;
     return false;
   };
 
