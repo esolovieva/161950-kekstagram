@@ -68,10 +68,46 @@
   }
 
   /**
+   * Выводит сообщения в tooltip элемента.
+   */
+  function showTextInTooltip(element, text) {
+    if (element) {
+      element.setAttribute('title', text);
+    }
+  }
+  /**
+   * Выводит сообщения об ошибках в tooltip элемента. Выделяет элемент красным цветом.
+   */
+  function showError(element, text) {
+    element.style.border = 'solid red 2px';
+    showTextInTooltip(element, text);
+    showTextInTooltip(submitButton, 'Неправильно заполнены поля!\n' + text);
+    submitButton.disabled = true;
+    return false;
+  }
+  /**
    * Проверяет, валидны ли данные, в форме кадрирования.
    * @return {boolean}
    */
   function resizeFormIsValid() {
+    var resizeX = resizeForm['resize-x'];
+    var resizeY = resizeForm['resize-y'];
+    var resizeSize = resizeForm['resize-size'];
+    var maxResizeX = currentResizer._image.naturalWidth - resizeSize.value;
+    var maxResizeY = currentResizer._image.naturalHeight - resizeSize.value;
+
+    if (+resizeX.value < 0) {
+      return showError(resizeX, 'Поля «сверху» и «слева» не могут быть отрицательными.');
+    }
+    if (+resizeY.value < 0) {
+      return showError(resizeY, 'Поля «сверху» и «слева» не могут быть отрицательными.');
+    }
+    if (+resizeX.value > +maxResizeX) {
+      return showError(resizeSize, 'Сумма значений полей «слева» и «сторона» не должна быть больше ширины исходного изображения.');
+    }
+    if (+resizeY.value > +maxResizeY) {
+      return showError(resizeSize, 'Сумма значений полей «сверху» и «сторона» не должна быть больше высоты исходного изображения.');
+    }
     return true;
   }
 
@@ -86,7 +122,7 @@
    * @type {HTMLFormElement}
    */
   var resizeForm = document.forms['upload-resize'];
-
+  var submitButton = resizeForm['resize-fwd'];
   /**
    * Форма добавления фильтра.
    * @type {HTMLFormElement}
@@ -158,7 +194,6 @@
 
           uploadForm.classList.add('invisible');
           resizeForm.classList.remove('invisible');
-
           hideMessage();
         };
 
@@ -171,7 +206,7 @@
     }
   };
 
-  /**
+   /**
    * Обработка сброса формы кадрирования. Возвращает в начальное состояние
    * и обновляет фон.
    * @param {Event} evt
@@ -193,13 +228,13 @@
    */
   resizeForm.onsubmit = function(evt) {
     evt.preventDefault();
-
     if (resizeFormIsValid()) {
       filterImage.src = currentResizer.exportImage().src;
-
       resizeForm.classList.add('invisible');
       filterForm.classList.remove('invisible');
+      return true;
     }
+    return false;
   };
 
   /**
