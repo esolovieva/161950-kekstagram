@@ -52,7 +52,6 @@
     xhr.timeout = DATA_LOAD_TIMEOUT;
     xhr.open('GET', 'http://o0.github.io/assets/json/pictures.json');
     xhr.onload = function(evt) {
-      showPreloader(pictureContainer);
       var rawData = evt.target.response;
       loadedPictures = JSON.parse(rawData);
       renderPictures(loadedPictures);
@@ -62,6 +61,7 @@
     xhr.onerror = function() {
       showError(pictureContainer);
     };
+    showPreloader(pictureContainer);
     xhr.send();
     //Если сервер не отвечает по таймауту
     xhr.ontimeout = function() {
