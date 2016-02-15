@@ -12,10 +12,13 @@
    */
   var pictureContainer = document.querySelector('div.pictures');
   var loadedPictures = [];
-  var popularFilterElement = document.querySelector('#filter-popular');
-  var newFilterElement = document.querySelector('#filter-new');
-  var discussedFilterElement = document.querySelector('#filter-discussed');
-  getPictures();
+  var filteredPictures = [];
+  //var renderedElements = [];
+  var currentPage = 0;
+  var PAGE_SIZE = 12;
+  var NEW_IMAGE_WIDTH = 182;
+  var NEW_IMAGE_HEIGHT = 182;
+
 
   function showError(element) {
     element.classList.add('pictures-failure');
@@ -36,15 +39,54 @@
   function showElement(element) {
     element.classList.remove('hidden');
   }
-  function renderPictures(pictures) {
+
+  var filters = document.querySelectorAll('.filters-radio');
+  for (var i = 0; i < filters.length; i++) {
+    filters[i].onclick = function(evt) {
+      var clickedElementID = evt.target.id;
+      setActiveFilter(clickedElementID);
+    };
+  }
+  var scrollTimeout;
+  window.addEventListener('scroll', function() {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(function() {
+      if (window.pageYOffset >= document.body.clientHeight - window.innerHeight) {
+        if (currentPage < Math.ceil(filteredPictures.length / PAGE_SIZE)) {
+          renderPictures(filteredPictures, ++currentPage, false);
+        }
+      }
+    }, 100);
+  });
+
+  getPictures();
+
+  function renderPictures(pictures, pageNumber, rewriteFlag) {
+    if (rewriteFlag) {
+      pictureContainer.innerHTML = ''; //Очищаем блок с фотографиями
+    }
     var fragment = document.createDocumentFragment();
-    pictures.forEach(function(picture) {
+    var from = pageNumber * PAGE_SIZE;
+    var to = from + PAGE_SIZE;
+    var pagePictures = pictures.slice(from, to);
+    pagePictures.forEach(function(picture) {
       var element = getElementFromTemplate(picture);
       fragment.appendChild(element);
     });
     pictureContainer.appendChild(fragment);
+    if (pageHasMorePlace() && (from <= pictures.length)) {
+      renderPictures(pictures, ++currentPage, false);
+    }
   }
 
+  function pageHasMorePlace() {
+    var lastPicture = pictureContainer.querySelector('a.picture:last-of-type');
+    var lastPictureY = lastPicture.getBoundingClientRect().bottom;
+    if ((window.innerHeight - lastPictureY) > Math.ceil(NEW_IMAGE_HEIGHT / 3)) {
+      return true;
+    }
+    return false;
+  }
   function getPictures() {
     var DATA_LOAD_TIMEOUT = 10000;
     hideElement(filterFormElement);
@@ -54,7 +96,9 @@
     xhr.onload = function(evt) {
       var rawData = evt.target.response;
       loadedPictures = JSON.parse(rawData);
-      renderPictures(loadedPictures);
+      //currentPage = 0;
+      filteredPictures = loadedPictures.slice(0);
+      renderPictures(filteredPictures, 0, true);
       hidePreloader(pictureContainer);
       showElement(filterFormElement);
     };
@@ -87,8 +131,8 @@
       clearTimeout(imageLoadTimeout);
       var newImg = document.createElement('img');
       newImg.src = data.url;
-      newImg.setAttribute('width', '182');
-      newImg.setAttribute('height', '182');
+      newImg.setAttribute('width', NEW_IMAGE_WIDTH);
+      newImg.setAttribute('height', NEW_IMAGE_HEIGHT);
       var existingIMG = element.querySelector('img');
       var parentNode = existingIMG.parentNode;
       parentNode.replaceChild(newImg, existingIMG);
@@ -106,47 +150,47 @@
     }, IMAGE_TIMEOUT);
     return element;
   }
-  /**
-   * Обработчик события при выборе фильтра популярные: писок фотографий, в том виде, в котором он был загружен
-   */
-  popularFilterElement.onclick = function() {
-    var popularPictures = loadedPictures.slice(0);
-    pictureContainer.innerHTML = ''; //Очищаем блок с фотографиями
-    renderPictures(popularPictures);
-  };
-  /**
-   * Обработчик события при выборе фильтра Новые:
-   * список фотографий, сделанных за последние две недели, отсортированные по убыванию даты (поле date).
-   */
-  newFilterElement.onclick = function() {
-    var dateTimeNow = new Date();
-    var TWO_WEEKS_MILLISECONDS = 2 * 7 * 24 * 60 * 60 * 1000;
-    var newPictures = loadedPictures.slice(0);
-    var delta, d;
-    var date1, date2;
-    newPictures = newPictures.filter(function(pic) {
-      d = new Date(pic.date);
-      delta = +dateTimeNow - +d;
-      return delta <= TWO_WEEKS_MILLISECONDS;
-    });
-    newPictures = newPictures.sort(function(pic1, pic2) {
-      date1 = new Date(pic1.date);
-      date2 = new Date(pic2.date);
-      return +date2 - +date1;
-    });
-    pictureContainer.innerHTML = ''; //Очищаем блок с фотографиями
-    renderPictures(newPictures);
-  };
-  /**
-   * Обработчик события при выборе фильтра
-   * Обсуждаемые: отсортированные по убыванию количества комментариев (поле comments)
-   */
-  discussedFilterElement.onclick = function() {
-    var discussedPictures = loadedPictures.slice(0);
-    discussedPictures = discussedPictures.sort(function(a, b) {
-      return b.comments - a.comments;
-    });
-    pictureContainer.innerHTML = ''; //Очищаем блок с фотографиями
-    renderPictures(discussedPictures);
-  };
+
+  function setActiveFilter(id) {
+    var radioInputs = filterFormElement.querySelectorAll('input[type="radio"]');
+    if (radioInputs) {
+      for (i = 0; i < radioInputs.length; i++) {
+        if (radioInputs[i].getAttribute('checked')) {
+          radioInputs[i].removeAttribute('checked');
+          break;
+        }
+      }
+      filterFormElement.querySelector('#' + id).checked = true;
+      filteredPictures = loadedPictures.slice(0);
+
+      switch (id) {
+        case 'filter-popular':
+          break;
+
+        case 'filter-new':
+          var dateTimeNow = new Date();
+          var TWO_WEEKS_MILLISECONDS = 2 * 7 * 24 * 60 * 60 * 1000;
+          var delta, d;
+          var date1, date2;
+          filteredPictures = filteredPictures.filter(function(pic) {
+            d = new Date(pic.date);
+            delta = +dateTimeNow - +d;
+            return delta <= TWO_WEEKS_MILLISECONDS;
+          }).sort(function(pic1, pic2) {
+            date1 = new Date(pic1.date);
+            date2 = new Date(pic2.date);
+            return +date2 - +date1;
+          });
+          break;
+        case 'filter-discussed':
+          filteredPictures = filteredPictures.sort(function(a, b) {
+            return b.comments - a.comments;
+          });
+          break;
+      }
+
+      currentPage = 0;
+      renderPictures(filteredPictures, currentPage, true);
+    }
+  }
 })();
