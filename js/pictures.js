@@ -74,7 +74,7 @@
       fragment.appendChild(element);
     });
     pictureContainer.appendChild(fragment);
-    if (pageHasMorePlace() && (from <= pictures.length)) {
+    if (pageHasMorePlace() && (to <= pictures.length)) {
       renderPictures(pictures, ++currentPage, false);
     }
   }
