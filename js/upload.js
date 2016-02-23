@@ -115,6 +115,23 @@
     }
     return true;
   }
+  /**
+   * Устанавливает значения в формы кадрирования, беря значения из объкта resizer
+   */
+  function setFormValuesFromResizer(resizer) {
+    var resizeX = resizeForm['resize-x'];
+    var resizeY = resizeForm['resize-y'];
+    var resizeSize = resizeForm['resize-size'];
+    if (resizeX) {
+      resizeX.value = resizer.getConstraint().x;
+    }
+    if (resizeY) {
+      resizeY.value = resizer.getConstraint().y;
+    }
+    if (resizeSize) {
+      resizeSize.value = resizer.getConstraint().side;
+    }
+  }
 
   /**
    * Форма загрузки изображения.
@@ -206,14 +223,19 @@
       }
     }
   }
-  var resizerChangeEvt = document.createEvent('Event'); //new Event('resizerchange');
-  resizerChangeEvt.initEvent('resizerchange', true, true);
-  window.addEventListener('resizechange', syncResizerAndForm(), false);
-  window.dispatchEvent(resizerChangeEvt);
 
-  function syncResizerAndForm() {
-    console.log(Resizer.getConstraint());
-  }
+  /**
+   * Обработчик изменения значения в ресайз форме.
+   * При изменении значений в полях формы меняется отрисовка рамки на картинке
+   */
+  resizeForm.addEventListener('change', function(evt) {
+    var element = evt.target;
+    if ((element === resizeForm['resize-x']) || (element === resizeForm['resize-y']) || (element === resizeForm['resize-size'])) {
+      currentResizer.setConstraint(resizeForm['resize-x'].value, resizeForm['resize-y'].value, resizeForm['resize-size'].value);
+      currentResizer.redraw();
+    }
+  });
+
   /**
    * Обработчик изменения изображения в форме загрузки. Если загруженный
    * файл является изображением, считывается исходник картинки, создается
@@ -231,21 +253,25 @@
 
         showMessage(Action.UPLOADING);
 
-        fileReader.onload = function() {
+        fileReader.addEventListener('load', function() {
           cleanupResizer();
-
           currentResizer = new Resizer(fileReader.result);
+          currentResizer._image.onload();
           currentResizer.setElement(resizeForm);
           uploadMessage.classList.add('invisible');
-
           uploadForm.classList.add('invisible');
           resizeForm.classList.remove('invisible');
           var filterToSelect = docCookies.getItem('filter');
           selectFilter('upload-filter-' + filterToSelect);
           hideMessage();
-        };
+          // Вычитка первоначальных данных для ресайз формы
+          window.addEventListener('resizerchange', setFormValuesFromResizer(currentResizer), false);
+          var resizerChangeEvt = new CustomEvent('resizerchange');
+          uploadForm.dispatchEvent(resizerChangeEvt);
+        });
 
         fileReader.readAsDataURL(element.files[0]);
+
       } else {
         // Показ сообщения об ошибке, если загружаемый файл, не является
         // поддерживаемым изображением.
@@ -253,6 +279,8 @@
       }
     }
   });
+
+
 
    /**
    * Обработка сброса формы кадрирования. Возвращает в начальное состояние

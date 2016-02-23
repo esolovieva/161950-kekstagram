@@ -104,8 +104,8 @@
       // Установка начальной точки системы координат в центр холста.
       this._ctx.translate(this._container.width / 2, this._container.height / 2);
 
-      var displX = -(this._resizeConstraint.x + this._resizeConstraint.side / 2);
-      var displY = -(this._resizeConstraint.y + this._resizeConstraint.side / 2);
+      var displX = -(+this._resizeConstraint.x + +this._resizeConstraint.side / 2);
+      var displY = -(+this._resizeConstraint.y + +this._resizeConstraint.side / 2);
       // Отрисовка изображения на холсте. Параметры задают изображение, которое
       // нужно отрисовать и координаты его верхнего левого угла.
       // Координаты задаются от центра холста.
