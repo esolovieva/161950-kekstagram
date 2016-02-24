@@ -274,9 +274,9 @@
      */
     moveConstraint: function(deltaX, deltaY, deltaSide) {
       this.setConstraint(
-          this._resizeConstraint.x + (deltaX || 0),
-          this._resizeConstraint.y + (deltaY || 0),
-          this._resizeConstraint.side + (deltaSide || 0));
+          +this._resizeConstraint.x + (+deltaX || 0),
+          +this._resizeConstraint.y + (+deltaY || 0),
+          +this._resizeConstraint.side + (+deltaSide || 0));
     },
 
     /**
