@@ -118,18 +118,20 @@
   /**
    * Устанавливает значения в формы кадрирования, беря значения из объкта resizer
    */
-  function setFormValuesFromResizer(resizer) {
-    var resizeX = resizeForm['resize-x'];
-    var resizeY = resizeForm['resize-y'];
-    var resizeSize = resizeForm['resize-size'];
-    if (resizeX) {
-      resizeX.value = resizer.getConstraint().x;
-    }
-    if (resizeY) {
-      resizeY.value = resizer.getConstraint().y;
-    }
-    if (resizeSize) {
-      resizeSize.value = resizer.getConstraint().side;
+  function setFormValuesFromResizer() {
+    if (currentResizer) {
+      var resizeX = resizeForm['resize-x'];
+      var resizeY = resizeForm['resize-y'];
+      var resizeSize = resizeForm['resize-size'];
+      if (resizeX) {
+        resizeX.value = currentResizer.getConstraint().x;
+      }
+      if (resizeY) {
+        resizeY.value = currentResizer.getConstraint().y;
+      }
+      if (resizeSize) {
+        resizeSize.value = currentResizer.getConstraint().side;
+      }
     }
   }
 
@@ -225,6 +227,13 @@
   }
 
   /**
+   * Обработчик события 'resizerchange' на объект window,
+   * который будет брать значения смещения и размера кадра
+   * из объекта resizer и добавлять их в форму
+   */
+  window.addEventListener('resizerchange', setFormValuesFromResizer, false);
+
+  /**
    * Обработчик изменения значения в ресайз форме.
    * При изменении значений в полях формы меняется отрисовка рамки на картинке
    */
@@ -265,9 +274,7 @@
           selectFilter('upload-filter-' + filterToSelect);
           hideMessage();
           // Вычитка первоначальных данных для ресайз формы
-          window.addEventListener('resizerchange', setFormValuesFromResizer(currentResizer), false);
-          var resizerChangeEvt = new CustomEvent('resizerchange');
-          uploadForm.dispatchEvent(resizerChangeEvt);
+          setFormValuesFromResizer();
         });
 
         fileReader.readAsDataURL(element.files[0]);
