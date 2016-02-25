@@ -119,7 +119,7 @@
    * Устанавливает значения в формы кадрирования, беря значения из объкта resizer
    */
   function setFormValuesFromResizer() {
-    if (currentResizer !== 'undefined') {
+    if (typeof currentResizer !== 'undefined') {
       var resizeX = resizeForm['resize-x'];
       var resizeY = resizeForm['resize-y'];
       var resizeSize = resizeForm['resize-size'];
