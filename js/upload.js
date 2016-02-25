@@ -241,7 +241,6 @@
     var element = evt.target;
     if ((element === resizeForm['resize-x']) || (element === resizeForm['resize-y']) || (element === resizeForm['resize-size'])) {
       currentResizer.setConstraint(resizeForm['resize-x'].value, resizeForm['resize-y'].value, resizeForm['resize-size'].value);
-      //currentResizer.redraw();
     }
   });
 
