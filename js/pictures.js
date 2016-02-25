@@ -96,7 +96,6 @@
     xhr.onload = function(evt) {
       var rawData = evt.target.response;
       loadedPictures = JSON.parse(rawData);
-      //currentPage = 0;
       filteredPictures = loadedPictures.slice(0);
       renderPictures(filteredPictures, 0, true);
       hidePreloader(pictureContainer);
@@ -166,7 +165,6 @@
       switch (id) {
         case 'filter-popular':
           break;
-
         case 'filter-new':
           var dateTimeNow = new Date();
           var TWO_WEEKS_MILLISECONDS = 2 * 7 * 24 * 60 * 60 * 1000;
