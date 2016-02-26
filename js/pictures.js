@@ -1,5 +1,4 @@
 /* global Photo: true, Gallery: true */
-
 'use strict';
 
 (function() {
