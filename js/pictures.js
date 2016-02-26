@@ -1,3 +1,5 @@
+/* global Photo: true */
+
 'use strict';
 
 (function() {
@@ -13,12 +15,9 @@
   var pictureContainer = document.querySelector('div.pictures');
   var loadedPictures = [];
   var filteredPictures = [];
-  //var renderedElements = [];
   var currentPage = 0;
   var PAGE_SIZE = 12;
-  var NEW_IMAGE_WIDTH = 182;
   var NEW_IMAGE_HEIGHT = 182;
-
 
   function showError(element) {
     element.classList.add('pictures-failure');
@@ -63,15 +62,20 @@
 
   function renderPictures(pictures, pageNumber, rewriteFlag) {
     if (rewriteFlag) {
-      pictureContainer.innerHTML = ''; //Очищаем блок с фотографиями
+      //Очищаем блок с фотографиями
+      var renderedElements = pictureContainer.querySelectorAll('.picture');
+      [].forEach.call(renderedElements, function(el) {
+        pictureContainer.removeChild(el);
+      });
     }
     var fragment = document.createDocumentFragment();
     var from = pageNumber * PAGE_SIZE;
     var to = from + PAGE_SIZE;
     var pagePictures = pictures.slice(from, to);
     pagePictures.forEach(function(picture) {
-      var element = getElementFromTemplate(picture);
-      fragment.appendChild(element);
+      var photoElement = new Photo(picture);
+      photoElement.render();
+      fragment.appendChild(photoElement.element);
     });
     pictureContainer.appendChild(fragment);
     if (pageHasMorePlace() && (to <= pictures.length)) {
@@ -111,43 +115,6 @@
       loadedPictures = '';
       showError(pictureContainer); // Показываем ошибку
     };
-  }
-
-  function getElementFromTemplate(data) {
-    var template = document.querySelector('#picture-template');
-    var element;
-    if ('content' in template) {
-      element = template.content.children[0].cloneNode(true);
-    } else {
-      element = template.children[0].cloneNode(true);
-    }
-    element.querySelector('.picture-comments').textContent = data.comments;
-    element.querySelector('.picture-likes').textContent = data.likes;
-    var picImage = new Image();
-    var imageLoadTimeout;
-    //Проверка, что изображение загрузилось с сервера
-    picImage.onload = function() {
-      clearTimeout(imageLoadTimeout);
-      var newImg = document.createElement('img');
-      newImg.src = data.url;
-      newImg.setAttribute('width', NEW_IMAGE_WIDTH);
-      newImg.setAttribute('height', NEW_IMAGE_HEIGHT);
-      var existingIMG = element.querySelector('img');
-      var parentNode = existingIMG.parentNode;
-      parentNode.replaceChild(newImg, existingIMG);
-    };
-    //Если изображение не загрузилось
-    picImage.onerror = function() {
-      element.classList.add('picture-load-failure');
-    };
-    picImage.src = data.url;
-    //Если сервер не отвечает по таймауту
-    var IMAGE_TIMEOUT = 10000;
-    imageLoadTimeout = setTimeout(function() {
-      picImage.src = ''; //Прекращаем загрузку
-      element.classList.add('picture-load-failure'); // Показываем ошибку
-    }, IMAGE_TIMEOUT);
-    return element;
   }
 
   function setActiveFilter(id) {
