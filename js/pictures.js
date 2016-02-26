@@ -1,5 +1,4 @@
-/* global Photo: true */
-
+/* global Photo: true, Gallery: true */
 'use strict';
 
 (function() {
@@ -18,6 +17,7 @@
   var currentPage = 0;
   var PAGE_SIZE = 12;
   var NEW_IMAGE_HEIGHT = 182;
+  var gallery = new Gallery();
 
   function showError(element) {
     element.classList.add('pictures-failure');
@@ -76,6 +76,7 @@
       var photoElement = new Photo(picture);
       photoElement.render();
       fragment.appendChild(photoElement.element);
+      photoElement.element.addEventListener('click', _onClick);
     });
     pictureContainer.appendChild(fragment);
     if (pageHasMorePlace() && (to <= pictures.length)) {
@@ -83,6 +84,14 @@
     }
   }
 
+  /**
+   * @param evt
+   * @private
+   */
+  function _onClick(evt) {
+    evt.preventDefault();
+    gallery.show();
+  }
   function pageHasMorePlace() {
     var lastPicture = pictureContainer.querySelector('a.picture:last-of-type');
     var lastPictureY = lastPicture.getBoundingClientRect().bottom;
@@ -101,7 +110,7 @@
       var rawData = evt.target.response;
       loadedPictures = JSON.parse(rawData);
       filteredPictures = loadedPictures.slice(0);
-      renderPictures(filteredPictures, 0, true);
+      renderPictures(filteredPictures, 0, false);
       hidePreloader(pictureContainer);
       showElement(filterFormElement);
     };
