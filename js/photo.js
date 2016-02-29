@@ -1,4 +1,3 @@
-
 'use strict';
 
 (function() {
@@ -9,6 +8,7 @@
   var Photo = function(data) {
     this._data = data;
   };
+  Photo.prototype.onClickCallback = null;
   Photo.prototype.render = function() {
     var NEW_IMAGE_WIDTH = 182;
     var NEW_IMAGE_HEIGHT = 182;
@@ -44,6 +44,15 @@
       picImage.src = ''; //Прекращаем загрузку
       this.element.classList.add('picture-load-failure'); // Показываем ошибку
     }, IMAGE_TIMEOUT);
+    this.element.addEventListener('click', this._onPhotoClick);
+  };
+  Photo.prototype._onPhotoClick = function() {
+    console.log(this.element);
+    if (!this.element.classList.contains('picture-load-failure')) {
+      if (this.onClickCallback !== null && typeof this.onClickCallback !== 'undefined' && typeof this.onClickCallback === 'function') {
+        this.onClickCallback();
+      }
+    }
   };
   window.Photo = Photo;
 })();
