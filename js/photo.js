@@ -7,6 +7,7 @@
    */
   var Photo = function(data) {
     this._data = data;
+    this._onPicClick = this._onPicClick.bind(this);
   };
   Photo.prototype.onClickCallback = null;
   Photo.prototype.render = function() {
@@ -44,12 +45,15 @@
       picImage.src = ''; //Прекращаем загрузку
       this.element.classList.add('picture-load-failure'); // Показываем ошибку
     }, IMAGE_TIMEOUT);
-    this.element.addEventListener('click', this._onPhotoClick);
+    this.element.addEventListener('click', this._onPicClick);
   };
-  Photo.prototype._onPhotoClick = function() {
-    console.log(this.element);
+  Photo.prototype.remove = function() {
+    this.element.removeEventListener()('click', this._onPicClick);
+  };
+  Photo.prototype._onPicClick = function(evt) {
+    console.dir(evt.target);
     if (!this.element.classList.contains('picture-load-failure')) {
-      if (this.onClickCallback !== null && typeof this.onClickCallback !== 'undefined' && typeof this.onClickCallback === 'function') {
+      if (this.onClickCallback !== null && typeof this.onClickCallback === 'function') {
         this.onClickCallback();
       }
     }

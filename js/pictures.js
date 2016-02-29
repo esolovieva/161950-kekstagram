@@ -78,11 +78,11 @@
       photoElement.render();
       fragment.appendChild(photoElement.element);
       photoElement.onClickCallback = function() {
-        gallery.setCurrentPicture(photoIndex);
+        gallery.setCurrentPicture(1);
         gallery.show();
       };
       photoIndex++;
-      //photoElement.element.addEventListener('click', _onClick);
+     // photoElement.element.addEventListener('click', _onClick);
     });
     pictureContainer.appendChild(fragment);
     if (pageHasMorePlace() && (to <= pictures.length)) {
@@ -95,7 +95,7 @@
   // * @private
   // */
   //function _onClick(evt) {
-  //  evt.preventDefault();
+  //  gallery.setCurrentPicture(1);
   //  gallery.show();
   //}
   function pageHasMorePlace() {
