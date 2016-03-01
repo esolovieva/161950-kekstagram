@@ -14,6 +14,7 @@
   var pictureContainer = document.querySelector('div.pictures');
   var loadedPictures = [];
   var filteredPictures = [];
+  var renderedElements = [];
   var currentPage = 0;
   var PAGE_SIZE = 12;
   var NEW_IMAGE_HEIGHT = 182;
@@ -63,35 +64,33 @@
   function renderPictures(pictures, pageNumber, rewriteFlag) {
     if (rewriteFlag) {
       //Очищаем блок с фотографиями
-      var renderedElements = pictureContainer.querySelectorAll('.picture');
-      [].forEach.call(renderedElements, function(el) {
-        pictureContainer.removeChild(el);
-      });
+      var el;
+      while ((el = renderedElements.shift())) {
+        pictureContainer.removeChild(el.element);
+        el.onClickCallback = null;
+        el.remove();
+      }
     }
     var fragment = document.createDocumentFragment();
     var from = pageNumber * PAGE_SIZE;
     var to = from + PAGE_SIZE;
     var pagePictures = pictures.slice(from, to);
-    pagePictures.forEach(function(picture) {
+    renderedElements = renderedElements.concat(pagePictures.map(function(picture, index) {
       var photoElement = new Photo(picture);
       photoElement.render();
       fragment.appendChild(photoElement.element);
-      photoElement.element.addEventListener('click', _onClick);
-    });
+      photoElement.onClickCallback = function() {
+        gallery.setCurrentPicture(from + index);
+        gallery.show();
+      };
+      return photoElement;
+    }));
     pictureContainer.appendChild(fragment);
     if (pageHasMorePlace() && (to <= pictures.length)) {
       renderPictures(pictures, ++currentPage, false);
     }
   }
 
-  /**
-   * @param evt
-   * @private
-   */
-  function _onClick(evt) {
-    evt.preventDefault();
-    gallery.show();
-  }
   function pageHasMorePlace() {
     var lastPicture = pictureContainer.querySelector('a.picture:last-of-type');
     var lastPictureY = lastPicture.getBoundingClientRect().bottom;
@@ -110,6 +109,7 @@
       var rawData = evt.target.response;
       loadedPictures = JSON.parse(rawData);
       filteredPictures = loadedPictures.slice(0);
+      gallery.setPictures(filteredPictures);
       renderPictures(filteredPictures, 0, false);
       hidePreloader(pictureContainer);
       showElement(filterFormElement);
@@ -165,6 +165,7 @@
 
       currentPage = 0;
       renderPictures(filteredPictures, currentPage, true);
+      gallery.setPictures(filteredPictures);
     }
   }
 })();
