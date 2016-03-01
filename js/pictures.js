@@ -14,6 +14,7 @@
   var pictureContainer = document.querySelector('div.pictures');
   var loadedPictures = [];
   var filteredPictures = [];
+  var renderedElements = [];
   var currentPage = 0;
   var PAGE_SIZE = 12;
   var NEW_IMAGE_HEIGHT = 182;
@@ -63,17 +64,18 @@
   function renderPictures(pictures, pageNumber, rewriteFlag) {
     if (rewriteFlag) {
       //Очищаем блок с фотографиями
-      var renderedElements = pictureContainer.querySelectorAll('.picture');
-      [].forEach.call(renderedElements, function(el) {
-        pictureContainer.removeChild(el);
-      });
+      var el;
+      while ((el = renderedElements.shift())) {
+        pictureContainer.removeChild(el.element);
+        el.onClickCallback = null;
+        el.remove();
+      }
     }
     var fragment = document.createDocumentFragment();
     var from = pageNumber * PAGE_SIZE;
     var to = from + PAGE_SIZE;
     var pagePictures = pictures.slice(from, to);
-    var photoIndex = from;
-    pagePictures.forEach(function(picture) {
+    renderedElements = renderedElements.concat(pagePictures.map(function(picture) {
       var photoElement = new Photo(picture);
       photoElement.render();
       fragment.appendChild(photoElement.element);
@@ -81,23 +83,14 @@
         gallery.setCurrentPicture(1);
         gallery.show();
       };
-      photoIndex++;
-     // photoElement.element.addEventListener('click', _onClick);
-    });
+      return photoElement;
+    }));
     pictureContainer.appendChild(fragment);
     if (pageHasMorePlace() && (to <= pictures.length)) {
       renderPictures(pictures, ++currentPage, false);
     }
   }
 
-  ///**
-  // * @param evt
-  // * @private
-  // */
-  //function _onClick(evt) {
-  //  gallery.setCurrentPicture(1);
-  //  gallery.show();
-  //}
   function pageHasMorePlace() {
     var lastPicture = pictureContainer.querySelector('a.picture:last-of-type');
     var lastPictureY = lastPicture.getBoundingClientRect().bottom;

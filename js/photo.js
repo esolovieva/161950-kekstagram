@@ -38,17 +38,20 @@
     picImage.onerror = function() {
       this.element.classList.add('picture-load-failure');
     }.bind(this);
-    picImage.src = this._data.url;
     //Если сервер не отвечает по таймауту
     var IMAGE_TIMEOUT = 10000;
     imageLoadTimeout = setTimeout(function() {
       picImage.src = ''; //Прекращаем загрузку
-      this.element.classList.add('picture-load-failure'); // Показываем ошибку
+      if (typeof this.element !== 'undefined') {
+        this.element.classList.add('picture-load-failure'); // Показываем ошибку
+      }
     }, IMAGE_TIMEOUT);
+
+    picImage.src = this._data.url;
     this.element.addEventListener('click', this._onPicClick);
   };
   Photo.prototype.remove = function() {
-    this.element.removeEventListener()('click', this._onPicClick);
+    this.element.removeEventListener('click', this._onPicClick);
   };
   Photo.prototype._onPicClick = function(evt) {
     console.dir(evt.target);
