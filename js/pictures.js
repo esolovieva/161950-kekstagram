@@ -75,12 +75,12 @@
     var from = pageNumber * PAGE_SIZE;
     var to = from + PAGE_SIZE;
     var pagePictures = pictures.slice(from, to);
-    renderedElements = renderedElements.concat(pagePictures.map(function(picture) {
+    renderedElements = renderedElements.concat(pagePictures.map(function(picture, index) {
       var photoElement = new Photo(picture);
       photoElement.render();
       fragment.appendChild(photoElement.element);
       photoElement.onClickCallback = function() {
-        gallery.setCurrentPicture(1);
+        gallery.setCurrentPicture(from + index);
         gallery.show();
       };
       return photoElement;
@@ -164,8 +164,8 @@
       }
 
       currentPage = 0;
-      gallery.setPictures(filteredPictures);
       renderPictures(filteredPictures, currentPage, true);
+      gallery.setPictures(filteredPictures);
     }
   }
 })();

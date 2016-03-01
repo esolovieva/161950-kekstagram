@@ -54,7 +54,7 @@
     this.element.removeEventListener('click', this._onPicClick);
   };
   Photo.prototype._onPicClick = function(evt) {
-    console.dir(evt.target);
+    evt.preventDefault();
     if (!this.element.classList.contains('picture-load-failure')) {
       if (this.onClickCallback !== null && typeof this.onClickCallback === 'function') {
         this.onClickCallback();
