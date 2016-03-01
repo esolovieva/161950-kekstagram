@@ -1,7 +1,9 @@
-/* global Photo: true, Gallery: true */
 'use strict';
 
-(function() {
+define([
+  'photo',
+  'gallery'
+], function(Photo, Gallery) {
   /**
    * Форма с классом filters.
    * @type {HTMLFormElement}
@@ -168,4 +170,4 @@
       gallery.setPictures(filteredPictures);
     }
   }
-})();
+});

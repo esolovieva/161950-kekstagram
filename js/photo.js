@@ -1,6 +1,6 @@
 'use strict';
 
-(function() {
+define(function() {
   /**
    * @constructor
    * @param {string} data
@@ -61,5 +61,5 @@
       }
     }
   };
-  window.Photo = Photo;
-})();
+  return Photo;
+});
