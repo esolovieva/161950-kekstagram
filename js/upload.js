@@ -2,7 +2,7 @@
  * @fileoverview
  * @author Igor Alexeenko (o0)
  */
-
+/* global docCookies: true */
 'use strict';
 
 define([
