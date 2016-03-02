@@ -1,7 +1,9 @@
-/* global Photo: true, Gallery: true */
 'use strict';
 
-(function() {
+define([
+  'photo',
+  'gallery'
+], function(Photo, Gallery) {
   /**
    * Форма с классом filters.
    * @type {HTMLFormElement}
@@ -58,8 +60,6 @@
       }
     }, 100);
   });
-
-  getPictures();
 
   function renderPictures(pictures, pageNumber, rewriteFlag) {
     if (rewriteFlag) {
@@ -168,4 +168,7 @@
       gallery.setPictures(filteredPictures);
     }
   }
-})();
+  return {
+    getPictures: getPictures
+  };
+});
