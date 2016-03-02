@@ -1,6 +1,6 @@
 'use strict';
 
-(function() {
+define(function() {
   /**
    * @constructor
    */
@@ -73,5 +73,5 @@
     overlayControlsLike.textContent = picture.likes;
     overlayControlsComment.textContent = picture.comments;
   };
-  window.Gallery = Gallery;
-})();
+  return Gallery;
+});

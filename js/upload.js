@@ -1,14 +1,13 @@
-/* global Resizer: true */
-/* global docCookies: true */
-
 /**
  * @fileoverview
  * @author Igor Alexeenko (o0)
  */
-
+/* global docCookies: true */
 'use strict';
 
-(function() {
+define([
+  'resizer'
+], function(Resizer) {
   /** @enum {string} */
   var FileType = {
     'GIF': '',
@@ -383,5 +382,8 @@
 
   cleanupResizer();
   updateBackground();
-})();
+  return {
+    setFormValuesFromResizer: setFormValuesFromResizer
+  };
+});
 
