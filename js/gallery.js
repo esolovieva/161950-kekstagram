@@ -11,7 +11,7 @@ define(function() {
     this._currentPictureId = 0;
   };
   /**
-   *Показ галереи
+   *Показывает галерею
    */
   Gallery.prototype.show = function() {
     this.element.classList.remove('invisible');
@@ -19,7 +19,7 @@ define(function() {
     window.addEventListener('keydown', this._onDocumentKeyDown);
   };
   /**
-   *Прячем галерею
+   *Прячет галерею
    */
   Gallery.prototype.hide = function() {
     this.element.classList.add('invisible');
@@ -27,12 +27,10 @@ define(function() {
     window.removeEventListener('keydown', this._onDocumentKeyDown);
   };
   /**
-   * Допишите обработчик клика по фотографии _onPhotoClick, созданный в прошлом разделе так,
-   * чтобы он показывал с помощью метода setCurrentPicture следующую по порядку фотографию,
+   * Показывает следующую по порядку фотографию,
    * если она есть.
-   * @param evt
    * @private
-     */
+   */
   Gallery.prototype._onPhotoClick = function() {
     var nextPictureId;
     if (this._currentPictureId) {
@@ -42,27 +40,28 @@ define(function() {
       }
     }
   };
+  /**
+   * Прячет фотогалерею при нажатии клавиши Escape
+   * @param {Event} evt
+   * @private
+     */
   Gallery.prototype._onDocumentKeyDown = function(evt) {
     evt.preventDefault();
     if (evt.keyCode === 27) {
       this.hide();
     }
   };
-  /**
-   * Добавьте метод setPictures(Array.<Object>), который принимает на вход
-   * массив фотографий из json и сохраняет его в объекте.
-   * @param data
+   /**
+   * Сохраняет массив фотографий в объекте
+   * @param {Array.<Object>} data - Массив фотографий из json
      */
   Gallery.prototype.setPictures = function(data) {
     this._data = data;
   };
   /**
-   * Добавьте метод setCurrentPicture(number), который берет фотографию с
-   * переданным индексом из массива фотографий и отрисовывает показывает
-   * ее в галерее, обновляя DOM-элемент .gallery-overlay: меняет src у фотографии
-   * .gallery-overlay-image и выставляет правильные количества лайков и комментариев
-   * в элементы .gallery-overlay-controls-like и .gallery-overlay-controls-comments.
-   * @param number
+   * Берет фотографию с переданным индексом и отрисовывает ее в галерее,
+   * обновляя DOM-элемент
+   * @param {number} number - Индекс фотографии в массиве фотографий
      */
   Gallery.prototype.setCurrentPicture = function(number) {
     this._currentPictureId = number;
