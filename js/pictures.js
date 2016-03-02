@@ -61,8 +61,6 @@ define([
     }, 100);
   });
 
-  getPictures();
-
   function renderPictures(pictures, pageNumber, rewriteFlag) {
     if (rewriteFlag) {
       //Очищаем блок с фотографиями
@@ -170,4 +168,7 @@ define([
       gallery.setPictures(filteredPictures);
     }
   }
+  return {
+    getPictures: getPictures
+  };
 });

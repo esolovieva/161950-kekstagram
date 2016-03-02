@@ -4,5 +4,8 @@ define([
   'upload',
   'pictures'
 ],
-function() {}
+function(upload, pictures) {
+  upload.setFormValuesFromResizer();
+  pictures.getPictures();
+}
 );

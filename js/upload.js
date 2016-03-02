@@ -6,9 +6,8 @@
 'use strict';
 
 define([
-  'resizer',
-  '../lib/cookies'
-], function(Resizer, docCookies) {
+  'resizer'
+], function(Resizer) {
   /** @enum {string} */
   var FileType = {
     'GIF': '',
@@ -373,5 +372,8 @@ define([
 
   cleanupResizer();
   updateBackground();
+  return {
+    setFormValuesFromResizer: setFormValuesFromResizer
+  };
 });
 
