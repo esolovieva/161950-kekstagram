@@ -29,6 +29,12 @@ define([
    * @type {Array}
      */
   var renderedElements = [];
+
+  /**
+   * Значение текущего фильтра
+   * @type {string}
+   */
+  var activeFilter = localStorage.getItem('activeFilter') || 'filter-popular';
   /**
    * Инициализация номера страницы для показа фотографий
    * @type {number}
@@ -176,8 +182,8 @@ define([
       var rawData = evt.target.response;
       loadedPictures = JSON.parse(rawData);
       filteredPictures = loadedPictures.slice(0);
+      setActiveFilter(activeFilter);
       gallery.setPictures(filteredPictures);
-      renderPictures(filteredPictures, 0, false);
       hidePreloader(pictureContainer);
       showElement(filterFormElement);
     };
@@ -236,6 +242,8 @@ define([
 
       currentPage = 0;
       renderPictures(filteredPictures, currentPage, true);
+      activeFilter = id;
+      localStorage.setItem('activeFilter', id);
       gallery.setPictures(filteredPictures);
     }
   }
