@@ -280,6 +280,7 @@ define(function() {
     },
 
     /**
+     * Устанавливает заданные значения кадрирования
      * @param {number} x
      * @param {number} y
      * @param {number} side

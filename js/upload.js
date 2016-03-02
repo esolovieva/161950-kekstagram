@@ -41,14 +41,13 @@ define([
    */
   var currentResizer;
 
+  var selectedFilter = 'none';
+  /* Хранит последний выбранный фильтр */
+
   /**
    * Удаляет текущий объект {@link Resizer}, чтобы создать новый с другим
    * изображением.
    */
-
-  var selectedFilter = 'none';
- /* Хранит последний выбранный фильтр */
-
   function cleanupResizer() {
     if (currentResizer) {
       currentResizer.remove();
@@ -145,6 +144,9 @@ define([
    * @type {HTMLFormElement}
    */
   var resizeForm = document.forms['upload-resize'];
+  /** Кнопка Submit
+   * @type {HTMLFormElement}
+   */
   var submitButton = resizeForm['resize-fwd'];
   /**
    * Форма добавления фильтра.
@@ -163,6 +165,7 @@ define([
   var uploadMessage = document.querySelector('.upload-message');
 
   /**
+   * Показывает соообщения о загрузке или ошибке
    * @param {Action} action
    * @param {string=} message
    * @return {Element}
@@ -187,15 +190,20 @@ define([
     return uploadMessage;
   }
 
+  /**
+   * Прячет сообщение об ошибке
+   */
   function hideMessage() {
     uploadMessage.classList.add('invisible');
   }
 
-   /**
-   * В файле upload.js сохраните в cookies последний выбранный фильтр:
-   * «Оригинал», «Хром» или «Сепия».
-   * Срок жизни cookie — количество дней, прошедшее с вашего ближайшего дня рождения.
-   */
+  /**
+   * Сохраняет в cookies последний выбранный фильтр.
+   * Срок жизни cookie — количество дней, прошедшее
+   * с ближайшего дня рождения.
+   * @param {string} cKey
+   * @param {string} cValue
+     */
   function setFilterCookie(cKey, cValue) {
     var BIRTH_MONTH_DAY = '-12-06';
     var dateTimeNow = new Date();
@@ -211,6 +219,10 @@ define([
   }
 
   /*Выставляет нужному радиобаттону атрибут checked, с остальных снимает атрибут checked*/
+  /**
+   * Выставляет нужному радиобаттону атрибут checked
+   * @param {string} filterId
+     */
   function selectFilter(filterId) {
     var filtForm = document.forms['upload-filter'];
     var radioInputs = filtForm.querySelectorAll('input[type="radio"]');
@@ -285,9 +297,7 @@ define([
     }
   });
 
-
-
-   /**
+  /**
    * Обработка сброса формы кадрирования. Возвращает в начальное состояние
    * и обновляет фон.
    * @param {Event} evt

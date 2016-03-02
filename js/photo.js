@@ -9,7 +9,11 @@ define(function() {
     this._data = data;
     this._onPicClick = this._onPicClick.bind(this);
   };
+
   Photo.prototype.onClickCallback = null;
+  /**
+   * Отрисовывает список фотографий на странице
+   */
   Photo.prototype.render = function() {
     var NEW_IMAGE_WIDTH = 182;
     var NEW_IMAGE_HEIGHT = 182;
@@ -50,9 +54,18 @@ define(function() {
     picImage.src = this._data.url;
     this.element.addEventListener('click', this._onPicClick);
   };
+  /**
+   * Удаляет обработчик клика по фотографии
+   */
   Photo.prototype.remove = function() {
     this.element.removeEventListener('click', this._onPicClick);
   };
+
+  /**
+   * Вызывает коллбэк onClickCallback в случае успешной загрузки фото
+   * @param evt
+   * @private
+     */
   Photo.prototype._onPicClick = function(evt) {
     evt.preventDefault();
     if (!this.element.classList.contains('picture-load-failure')) {
