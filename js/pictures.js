@@ -145,7 +145,7 @@ define([
       fragment.appendChild(photoElement.element);
       photoElement.onClickCallback = function() {
         gallery.setCurrentPicture(from + index);
-        gallery.show();
+        location.hash = 'photo/' + picture.url;
       };
       return photoElement;
     }));
@@ -186,6 +186,7 @@ define([
       gallery.setPictures(filteredPictures);
       hidePreloader(pictureContainer);
       showElement(filterFormElement);
+      showGalleryNow();
     };
     xhr.onerror = function() {
       showError(pictureContainer);
@@ -250,4 +251,31 @@ define([
   return {
     getPictures: getPictures
   };
+
+  /**
+   * Берет путь к файлу из хэша
+   * @returns {string} пустую строку или путь к файлу в нужном формате
+     */
+  function getPhotoPathFromHash() {
+    var REMOVE_FROM_HASH_STRING = '#photo/';
+    var currentHash = location.hash;
+    if (currentHash.indexOf(REMOVE_FROM_HASH_STRING) !== -1) {
+      currentHash = currentHash.slice(REMOVE_FROM_HASH_STRING.length);
+    } else {
+      currentHash = '';
+    }
+    return currentHash;
+  }
+
+  /**
+   * Если URL содержит путь к фото, то показывает галерею с фото сразу
+   */
+  function showGalleryNow() {
+    var path = getPhotoPathFromHash();
+    if (path !== '') {
+      gallery.setCurrentPicture(path);
+      gallery.show();
+    }
+  }
+
 });
